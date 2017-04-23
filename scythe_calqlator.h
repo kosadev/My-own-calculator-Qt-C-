@@ -11,6 +11,8 @@
 #include <QUrl>
 #include <QKeyEvent>
 
+#include <cmath>
+
 
 const QChar MathSymbolSquareRoot(0x221A);
 const QChar MathSymbolPlusOrMinus(0xB1);
@@ -111,7 +113,7 @@ private:
     double sqrootcalc(double number);
     unsigned int how_many_digits(double a);
     unsigned int how_many_digits_in_fraction(double a);
-    void summary(QString &str, double &data);
+    void summary(QString &str, double data);
     inline void toshort(int a);
 
 

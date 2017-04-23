@@ -401,13 +401,13 @@ void Scythe_calqlator::equal()
         break;
 
     case 4:
-        if(temp==0)
+       /* if(temp==0)
         {
           previous=result;
           result/=previous;
           summary(strresult, result);
           previousaction=4;
-        }else
+        }else*/
         divide();
         break;
 
@@ -429,11 +429,17 @@ void Scythe_calqlator::add()
     {
         if(action==1)
         {
-            result+=temp;
+            if(temp==0)//in case, we didn't enter second number
+            {
+                      previous=result;
+            }else
+            {
+                previous=temp;
+                temp=0;
+                strtemp.setNum(temp);
+            }
+            result+=previous;
             summary(strresult, result);
-            previous=temp;
-            temp=0;
-            strtemp.setNum(temp);
             previousaction=action;
             action=0;
         }else
@@ -454,11 +460,17 @@ void Scythe_calqlator::substract()
     {
         if(action==2)
         {
-            result-=temp;
+            if(temp==0)//in case, we didn't enter second number
+            {
+                      previous=result;
+            }else
+            {
+                previous=temp;
+                temp=0;
+                strtemp.setNum(temp);
+            }
+            result-=previous;
             summary(strresult, result);
-            previous=temp;
-            temp=0;
-            strtemp.setNum(temp);
             previousaction=action;
             action=0;
         }else
@@ -481,11 +493,17 @@ void Scythe_calqlator::multiply()
     {
         if(action==3)
         {
-            result*=temp;
+            if(temp==0)//in case, we didn't enter multiplier
+            {
+                      previous=result;
+            }else
+            {
+                previous=temp;
+                temp=0;
+                strtemp.setNum(temp);
+            }
+            result*=previous;
             summary(strresult, result);
-            previous=temp;
-            temp=0;
-            strtemp.setNum(temp);
             previousaction=action;
             action=0;
         }else
@@ -508,15 +526,20 @@ void Scythe_calqlator::divide()
     {
         if(action==4)
         {
-            result/=temp;
-            //strresult.setNum(result);
-            //change(strresult);
+            if(temp==0)//in case, we didn't enter divisor
+            {
+                      previous=result;
+            }else
+            {
+                previous=temp;
+                temp=0;
+                strtemp.setNum(temp);
+            }
+            result/=previous;
             summary(strresult, result);
-            previous=temp;
-            temp=0;
-            strtemp.setNum(temp);
             previousaction=action;
             action=0;
+
         }else
         {
          equal();
@@ -732,19 +755,21 @@ void Scythe_calqlator::showabout()
 //others functions
 
 //this function is used to short others. Here is determined, how write out number
-void Scythe_calqlator::summary(QString &str, double &data)
+void Scythe_calqlator::summary(QString &str, double data)
 {
     if(how_many_digits(data)+how_many_digits_in_fraction(data)>10)
     {
-    str.setNum(data, 'g', 6);
+    str.setNum(data, 'e', 6);
     }else
     {
-    if(fractionstr.length()==0)
+    if(fractionstr.length()==0 && fmod(data,1)==0)
     str.setNum(data, 'f', 0);
     else
     str.setNum(data, 'f', how_many_digits_in_fraction(data));
     }
 
+
+    //str.setNum(data,'f', 0);
     change(str);
     is_certain=false;
 }
@@ -782,6 +807,8 @@ unsigned int Scythe_calqlator::how_many_digits(double a)
     int x=0;
     for(;a>=1; a/=10)x++;
 
+    if(x==0 && a<1)x++;
+
     return x;
 
 }
@@ -791,7 +818,7 @@ unsigned int Scythe_calqlator::how_many_digits_in_fraction(double a)
 {
 
     QString *temporarystr=new QString[2];
-    temporarystr[0].setNum(a,'f',10);
+    temporarystr[0].setNum(a,'f');
 
 
     temporarystr[1] = temporarystr[0].mid(how_many_digits(a)+1);
